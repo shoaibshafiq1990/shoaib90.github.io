@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pages\Counter.razor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.23" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Counter.razor.cs" />
+    <None Include="wwwroot\files\style.css" />
+    <None Include="wwwroot\img\about.png" />
+    <None Include="wwwroot\img\cropedpic.png" />
+    <None Include="wwwroot\img\DA.png" />
+    <None Include="wwwroot\img\DD.png" />
+    <None Include="wwwroot\img\FMD.png" />
+    <None Include="wwwroot\img\ic.png" />
+    <None Include="wwwroot\img\midclg.jpeg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HelpDeskShared\HelpDeskShared.csproj" />
+  </ItemGroup>
+
+</Project>

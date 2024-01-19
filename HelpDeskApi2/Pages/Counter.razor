@@ -1,0 +1,171 @@
+﻿@page "/counter"
+@using HelpDeskShared;
+@using System.Net.Http.Json;
+@using HelpDeskShared.Models;
+@using Microsoft.AspNetCore.Components.Web;
+@inject HttpClient Http
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="GetUserList">Get Users</button>
+
+@if (userlist != null)
+{
+    <table>
+        <tr>
+            <b>
+            <td>User ID</td>
+            <td>User Name</td>
+            <td>Password</td>
+            </b>
+        </tr>
+        @foreach (User u in userlist)
+        {
+            <tr>
+                <td>@u.UserID.ToString()</td>
+                <td>@u.UserName</td>
+                <td>@u.Password</td>
+            </tr>
+        }
+    </table>
+}
+
+User Name: <input type="text" @bind-value="@newuser.UserName">
+Password: <input type="text" @bind-value="@newuser.Password">
+
+<button class="btn btn-primary" @onclick="InsertUser">Create New User</button>
+<div>@result</div>
+
+User ID: <input type="text" @bind-value="@updateuser.UserID">
+User Name:
+<input type="text" @bind-value="@updateuser.UserName">
+Password:
+<input type="text" @bind-value="@updateuser.Password">
+ 
+<button class="btn btn-primary" @onclick="UpdateUser">Update User</button>
+<br />
+<br />
+<br />
+<br />
+WORKORDERID: 0, REQUESTERID: 4, CREATEDBYID: 4, DUEBYTIME: -1, TITLE: asd, DESCRIPTION: asd, MODEID: 2, DEPTID: 301, SITEID: 903, ISPARENT: 1,
+TEMPLATEID: 303, SERVICEID: 301, IS_CATALOG_TEMPLATE: 1, FR_DUETIME: -1, HELPDESKID: 1, CATEGORYID: 301, SUBCATEGORYID: 304, STATUSID: 2, PRIORITYID: 3, OLA_STATUS: 1,
+HASATTACHMENT: 0, OWNERID: 905, QUEUEID: 302
+
+<br />
+<br />
+<br />
+REQUESTERID:
+<input type="text" @bind-value="@sr.REQUESTERID">
+<br /> CREATEDBYID:
+<input type="text" @bind-value="@sr.CREATEDBYID">
+<br />TITLE
+<input type="text" @bind-value="@sr.TITLE">
+<br />DESCRIPTION
+<input type="text" @bind-value="@sr.description">
+<br />DEPTID
+<input type="text" @bind-value="@sr.DEPTID">
+<br />SITEID
+<input type="text" @bind-value="@sr.SITEID">
+<br />CATEGORYID
+<input type="text" @bind-value="@sr.CATEGORYID">
+<br />SUBCATEGORYID
+<input type="text" @bind-value="@sr.SUBCATEGORYID">
+<br />STATUSID
+<br />PRIORITYID
+<input type="text" @bind-value="@sr.PRIORITYID">
+<br />HASATTACHMENT
+<input type="text" @bind-value="@sr.HASATTACHMENT">
+<br />OWNERID
+<input type="text" @bind-value="@sr.OWNERID">
+<br />QUEUEID
+<input type="text" @bind-value="@sr.QUEUEID">
+<br />
+<button class="btn btn-primary" @onclick="IsertSr">Check API for SR</button>
+
+
+
+@code {
+    private int currentCount = 0;
+    private List<User>? userlist = null;
+    string result = "";
+    private User? newuser { get; set; } = new User();
+    private User? updateuser { get; set; } = new User();
+    private InsertServiceRequest? sr { get; set; } = new InsertServiceRequest();
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+     
+    private async void GetUserList()
+    {
+        if (userlist == null)
+        {
+            userlist = await Http.GetFromJsonAsync<List<User>>("api/user/getuserlist");
+            StateHasChanged();
+        }
+    }
+
+    private async void InsertUser()
+    {
+        if (newuser != null)
+        {
+            var response = await Http.PostAsJsonAsync("api/user/insertuser", newuser);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                newuser = new();
+                result = "User successfully added.";
+            }
+            else
+            {
+                result = await response.Content.ReadAsStringAsync();
+            }   
+            StateHasChanged();
+        }
+    }
+
+
+    private async void UpdateUser()
+    {
+        if (updateuser != null)
+        {
+            var response = await Http.PutAsJsonAsync("api/user/updateuser", updateuser);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                updateuser = new();
+                result = "User successfully updated.";
+            }
+            else
+            {
+                result = await response.Content.ReadAsStringAsync();
+            }
+            StateHasChanged();
+        }
+    }
+
+
+    private async void IsertSr()
+    {
+        if (sr != null)
+        {
+            var response = await Http.PutAsJsonAsync("api/helpdeskelec/insertservicer", sr);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                sr = new();
+                result = "SR successfully Inserted.";
+            }
+            else
+            {
+                result = await response.Content.ReadAsStringAsync();
+            }
+            StateHasChanged();
+        }
+    }
+
+
+}
